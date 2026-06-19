@@ -1,0 +1,241 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@400;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  .hw-root{min-height:100vh;background:#07050f;position:relative;overflow:hidden;padding:24px 16px 40px;font-family:'Cinzel',serif;}
+  .bg-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+  .content{position:relative;z-index:1;}
+  .top-rule{height:3px;background:linear-gradient(90deg,transparent,#7B2C2C 15%,#C6A227 35%,#3259A8 65%,#2A653B 85%,transparent);margin-bottom:24px;}
+
+  .hw-title{text-align:center;margin-bottom:28px;}
+  .hw-title h1{
+    font-family:'Old English Text MT','UnifrakturMaguntia',cursive;
+    font-size:44px;color:#C6A227;letter-spacing:2px;line-height:1.15;
+    text-shadow:0 0 30px rgba(198,162,39,0.6),0 2px 4px rgba(0,0,0,0.9);
+  }
+  .hw-title .subtitle{font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;color:rgba(255,255,255,0.35);margin-top:6px;text-transform:uppercase;}
+  .deco-line{display:flex;align-items:center;gap:10px;max-width:360px;margin:8px auto;}
+  .deco-line span{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(198,162,39,0.4),transparent);}
+  .deco-gem{width:7px;height:7px;background:#C6A227;transform:rotate(45deg);}
+
+  .boards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:1300px;margin:0 auto;align-items:stretch;}
+  .house-card{border-radius:12px;overflow:hidden;position:relative;transition:transform 0.2s;min-height:560px;display:flex;flex-direction:column;justify-content:center;}
+  .house-card:hover{transform:translateY(-3px);}
+  .house-card.gryffindor{background:linear-gradient(160deg,#2a0404 0%,#1a0202 100%);border:1px solid rgba(174,0,1,0.45);box-shadow:0 2px 20px rgba(174,0,1,0.12);}
+  .house-card.hufflepuff{background:linear-gradient(160deg,#221900 0%,#150f00 100%);border:1px solid rgba(198,162,39,0.4);box-shadow:0 2px 20px rgba(198,162,39,0.1);}
+  .house-card.ravenclaw{background:linear-gradient(160deg,#06092a 0%,#020415 100%);border:1px solid rgba(50,89,168,0.45);box-shadow:0 2px 20px rgba(50,89,168,0.12);}
+  .house-card.slytherin{background:linear-gradient(160deg,#031403 0%,#010d01 100%);border:1px solid rgba(42,101,59,0.45);box-shadow:0 2px 20px rgba(42,101,59,0.12);}
+
+  .rank-badge{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Old English Text MT','UnifrakturMaguntia',cursive;font-size:14px;}
+  .rank-1{background:#C6A227;color:#1a0800;}
+  .rank-2{background:#9CA3AF;color:#111;}
+  .rank-3{background:#92400E;color:#fff;}
+  .rank-4{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);}
+
+  .house-header{padding:28px 24px 18px;text-align:center;}
+  .emblem{width:110px;height:110px;margin:0 auto 14px;}
+  .emblem svg,.emblem img{width:100%;height:100%;display:block;object-fit:contain;}
+  .house-name{font-family:'Old English Text MT','UnifrakturMaguntia',cursive;font-size:28px;margin-bottom:6px;}
+  .gryffindor .house-name{color:#E8C84A;}
+  .hufflepuff .house-name{color:#F0D060;}
+  .ravenclaw .house-name{color:#7BA7E8;}
+  .slytherin .house-name{color:#5DC85D;}
+  .house-motto{font-size:10px;letter-spacing:1.2px;color:rgba(255,255,255,0.38);font-style:italic;}
+
+  .score-section{padding:22px 22px 24px;border-top:1px solid rgba(255,255,255,0.07);text-align:center;display:flex;flex-direction:column;justify-content:center;flex:1;}
+  .score-label{font-size:9px;letter-spacing:3px;color:rgba(255,255,255,0.35);text-transform:uppercase;margin-bottom:6px;}
+  .score-num{font-family:'Old English Text MT','UnifrakturMaguntia',cursive;font-size:68px;line-height:1;margin-bottom:14px;text-shadow:0 0 16px currentColor;}
+  .gryffindor .score-num{color:#E8C84A;}
+  .hufflepuff .score-num{color:#F5E87A;}
+  .ravenclaw .score-num{color:#7BA7E8;}
+  .slytherin .score-num{color:#5DC85D;}
+
+  .prog-bar-wrap{height:5px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;margin-bottom:12px;}
+  .prog-bar{height:100%;border-radius:3px;transition:width 0.6s ease;}
+  .gryffindor .prog-bar{background:linear-gradient(90deg,#7B0000,#E8C84A);}
+  .hufflepuff .prog-bar{background:linear-gradient(90deg,#7A6000,#F0D060);}
+  .ravenclaw .prog-bar{background:linear-gradient(90deg,#1A3A6B,#7BA7E8);}
+  .slytherin .prog-bar{background:linear-gradient(90deg,#0D3A18,#5DC85D);}
+
+  .btns{display:flex;gap:24px;justify-content:center;margin-bottom:14px;}
+  .btn{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-family:'Cinzel',serif;}
+  .btn:hover{background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.38);}
+  .btn:active{transform:scale(0.9);}
+  .btn-star{font-size:13px;width:38px;}
+  .custom-row{display:flex;gap:12px;align-items:center;justify-content:center;}
+  .pts-inp{width:72px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.14);border-radius:5px;color:white;font-family:'Cinzel',serif;font-size:12px;padding:4px 6px;text-align:center;outline:none;}
+  .pts-inp:focus{border-color:rgba(255,255,255,0.35);}
+  .mini-btn{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:4px;color:rgba(255,255,255,0.7);font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.5px;padding:4px 7px;cursor:pointer;transition:all 0.15s;}
+  .mini-btn:hover{background:rgba(255,255,255,0.12);}
+
+  .bottom-bar{text-align:center;margin-top:26px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
+  .reset-btn{background:transparent;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.35);font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;padding:9px 22px;border-radius:20px;cursor:pointer;transition:all 0.2s;}
+  .reset-btn:hover{border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.65);}
+  .endgame-btn{background:linear-gradient(135deg,rgba(198,162,39,0.15),rgba(198,162,39,0.05));border:1px solid rgba(198,162,39,0.45);color:#C6A227;font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;padding:9px 22px;border-radius:20px;cursor:pointer;transition:all 0.2s;}
+  .endgame-btn:hover{background:linear-gradient(135deg,rgba(198,162,39,0.28),rgba(198,162,39,0.1));border-color:rgba(198,162,39,0.8);box-shadow:0 0 14px rgba(198,162,39,0.25);}
+
+  .winner-overlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:100;background:rgba(4,2,12,0.0);display:flex;align-items:center;justify-content:center;pointer-events:none;transition:background 1s ease;}
+  .winner-overlay.active{background:rgba(4,2,12,0.93);pointer-events:all;}
+  .winner-box{text-align:center;padding:48px 52px;opacity:0;transform:scale(0.7) translateY(40px);transition:opacity 0.9s ease 0.5s,transform 0.9s ease 0.5s;max-width:420px;width:90%;}
+  .winner-overlay.active .winner-box{opacity:1;transform:scale(1) translateY(0);}
+  .winner-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px;}
+  .winner-emblem{width:130px;height:130px;margin:0 auto 20px;filter:drop-shadow(0 0 24px var(--wc));}
+  .winner-emblem svg,.winner-emblem img{width:100%;height:100%;display:block;object-fit:contain;}
+  .winner-name{font-family:'Old English Text MT','UnifrakturMaguntia',cursive;font-size:44px;color:var(--wc);text-shadow:0 0 30px var(--wc);margin-bottom:8px;}
+  .winner-pts{font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:rgba(255,255,255,0.5);margin-bottom:24px;}
+  .winner-deco{display:flex;align-items:center;gap:12px;max-width:280px;margin:0 auto 24px;}
+  .winner-deco span{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--wc),transparent);}
+  .winner-deco-gem{width:8px;height:8px;transform:rotate(45deg);background:var(--wc);}
+  .firework-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99;}
+  .close-overlay-btn{background:transparent;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;padding:8px 20px;border-radius:16px;cursor:pointer;transition:all 0.2s;}
+  .close-overlay-btn:hover{border-color:rgba(255,255,255,0.5);color:rgba(255,255,255,0.9);}
+  @keyframes float-gem{0%,100%{transform:rotate(45deg) translateY(0);}50%{transform:rotate(45deg) translateY(-6px);}}
+  .winner-deco-gem{animation:float-gem 2s ease-in-out infinite;}
+  @keyframes pulse-glow{0%,100%{opacity:1;}50%{opacity:0.6;}}
+  .winner-name{animation:pulse-glow 2.5s ease-in-out infinite;}
+</style>
+
+<div class="hw-root">
+  <canvas class="bg-canvas" id="bgCanvas"></canvas>
+  <canvas class="firework-canvas" id="fwCanvas"></canvas>
+
+  <div class="winner-overlay" id="winnerOverlay">
+    <div class="winner-box" id="winnerBox">
+      <div class="winner-label">&#10022; House Cup Champion &#10022;</div>
+      <div class="winner-emblem" id="winnerEmblem"></div>
+      <div class="winner-name" id="winnerName"></div>
+      <div class="winner-deco"><span></span><div class="winner-deco-gem"></div><span></span></div>
+      <div class="winner-pts" id="winnerPts"></div>
+      <button class="close-overlay-btn" onclick="closeWinner()">&#8592; Back to Scoreboard</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="top-rule"></div>
+    <div class="hw-title">
+      <h1>The House Cup</h1>
+      <div class="deco-line"><span></span><div class="deco-gem"></div><span></span></div>
+      <div class="subtitle">Hogwarts School of Witchcraft &amp; Wizardry</div>
+    </div>
+    <div class="boards-grid" id="boards"></div>
+    <div class="bottom-bar">
+      <button class="reset-btn" onclick="resetAll()">&#10022; Reset Scores &#10022;</button>
+      <button class="endgame-btn" onclick="endGame()">&#9876; Award the Cup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const EMBLEMS={
+  gryffindor:`<img alt="Gryffindor crest" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blason%20Gryffondor.svg" />`,
+  hufflepuff:`<img alt="Hufflepuff crest" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blason%20Poufsouffle.svg" />`,
+  ravenclaw:`<img alt="Ravenclaw crest" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blason%20Serdaigle.svg" />`,
+  slytherin:`<img alt="Slytherin crest" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blason%20Serpentard.svg" />`
+};
+
+const HOUSES=[
+  {id:'gryffindor',name:'Gryffindor',motto:'Bravery · Nerve · Chivalry',color:'#E8C84A'},
+  {id:'hufflepuff',name:'Hufflepuff',motto:'Hard Work · Patience · Loyalty',color:'#F5E87A'},
+  {id:'ravenclaw', name:'Ravenclaw', motto:'Wisdom · Creativity · Learning',color:'#7BA7E8'},
+  {id:'slytherin', name:'Slytherin', motto:'Ambition · Cunning · Resourcefulness',color:'#5DC85D'},
+];
+const scores={gryffindor:0,hufflepuff:0,ravenclaw:0,slytherin:0};
+
+function getRanks(){const s=[...HOUSES].sort((a,b)=>scores[b.id]-scores[a.id]);const r={};s.forEach((h,i)=>r[h.id]=i+1);return r;}
+function getMax(){return Math.max(...Object.values(scores),1);}
+
+function render(){
+  const ranks=getRanks(),maxS=getMax(),wrap=document.getElementById('boards');
+  wrap.innerHTML='';
+  HOUSES.forEach(house=>{
+    const s=scores[house.id],pct=Math.round((s/maxS)*100),rank=ranks[house.id];
+    const div=document.createElement('div');
+    div.className=`house-card ${house.id}`;
+    div.innerHTML=`
+      <div class="rank-badge rank-${rank}">${rank}</div>
+      <div class="house-header">
+        <div class="emblem">${EMBLEMS[house.id]}</div>
+        <div class="house-name">${house.name}</div>
+        <div class="house-motto">${house.motto}</div>
+      </div>
+      <div class="score-section">
+        <div class="score-label">Points</div>
+        <div class="score-num">${s}</div>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:${pct}%"></div></div>
+        <div class="btns">
+          <button class="btn" onclick="adj('${house.id}',-10)">&#8722;</button>
+          <button class="btn" onclick="adj('${house.id}',10)">+</button>
+          <button class="btn btn-star" onclick="adj('${house.id}',50)">&#10022;</button>
+        </div>
+        <div class="custom-row">
+          <input class="pts-inp" type="number" id="inp-${house.id}" placeholder="pts" min="0"/>
+          <button class="mini-btn" onclick="custom('${house.id}',1)">+Add</button>
+          <button class="mini-btn" onclick="custom('${house.id}',-1)">&#8722;Sub</button>
+        </div>
+      </div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function adj(id,amt){scores[id]=Math.max(0,scores[id]+amt);render();}
+function custom(id,sign){const inp=document.getElementById('inp-'+id);const v=parseInt(inp.value)||0;if(v>0){scores[id]=Math.max(0,scores[id]+sign*v);inp.value='';render();}}
+function resetAll(){Object.keys(scores).forEach(k=>scores[k]=0);render();}
+
+function endGame(){
+  const winner=[...HOUSES].sort((a,b)=>scores[b.id]-scores[a.id])[0];
+  const overlay=document.getElementById('winnerOverlay');
+  document.getElementById('winnerEmblem').innerHTML=EMBLEMS[winner.id];
+  document.getElementById('winnerName').textContent=winner.name;
+  document.getElementById('winnerPts').textContent=scores[winner.id]+' Points Earned';
+  overlay.style.setProperty('--wc',winner.color);
+  overlay.classList.add('active');
+  startFireworks();
+}
+function closeWinner(){document.getElementById('winnerOverlay').classList.remove('active');stopFireworks();}
+
+let fwAnim=null,fwParticles=[];
+function startFireworks(){
+  const canvas=document.getElementById('fwCanvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;
+  fwParticles=[];
+  function burst(x,y,color){for(let i=0;i<60;i++){const angle=Math.random()*Math.PI*2,speed=2+Math.random()*5;fwParticles.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,color,life:1,decay:0.012+Math.random()*0.014,size:2+Math.random()*2.5});}}
+  const colors=['#E8C84A','#F5E87A','#7BA7E8','#5DC85D','#C6A227','#FF8C00','#fff'];
+  let ticker=0;
+  function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ticker++;
+    if(ticker%28===0){burst(canvas.width*(0.2+Math.random()*0.6),canvas.height*(0.15+Math.random()*0.45),colors[Math.floor(Math.random()*colors.length)]);}
+    fwParticles=fwParticles.filter(p=>p.life>0);
+    fwParticles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.06;p.life-=p.decay;ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.size*p.life,0,Math.PI*2);ctx.fill();});
+    ctx.globalAlpha=1;
+    fwAnim=requestAnimationFrame(loop);
+  }
+  loop();
+}
+function stopFireworks(){if(fwAnim)cancelAnimationFrame(fwAnim);const canvas=document.getElementById('fwCanvas');canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);fwParticles=[];}
+
+render();
+
+const bgCanvas=document.getElementById('bgCanvas');
+const bctx=bgCanvas.getContext('2d');
+let bW,bH,bStars=[],bStones=[];
+function bgResize(){
+  bW=bgCanvas.offsetWidth;bH=bgCanvas.offsetHeight;
+  bgCanvas.width=bW;bgCanvas.height=bH;
+  bStars=Array.from({length:120},()=>({x:Math.random()*bW,y:Math.random()*bH,r:Math.random()*1.5+0.3,a:Math.random(),da:(Math.random()-0.5)*0.008}));
+  bStones=[];
+  const sw=60,sh=28,cols=Math.ceil(bW/sw)+1,rows=Math.ceil(bH/sh)+2;
+  for(let row=0;row<rows;row++){for(let col=0;col<cols;col++){const ox=(row%2)*sw*0.5;bStones.push({x:col*sw+ox,y:row*sh,w:sw-2,h:sh-2,tone:0.03+Math.random()*0.04});}}
+}
+function drawBg(){
+  bctx.fillStyle='#07050f';bctx.fillRect(0,0,bW,bH);
+  bStones.forEach(s=>{bctx.fillStyle=`rgba(255,255,255,${s.tone})`;bctx.strokeStyle='rgba(0,0,0,0.6)';bctx.lineWidth=0.5;bctx.beginPath();bctx.roundRect(s.x,s.y,s.w,s.h,2);bctx.fill();bctx.stroke();});
+  [{x:bW*0.08,c:'rgba(174,80,0,0.12)'},{x:bW*0.92,c:'rgba(174,80,0,0.12)'},{x:bW*0.5,c:'rgba(120,60,180,0.07)'}].forEach(t=>{const g=bctx.createRadialGradient(t.x,bH*0.3,0,t.x,bH*0.3,bH*0.55);g.addColorStop(0,t.c);g.addColorStop(1,'transparent');bctx.fillStyle=g;bctx.fillRect(0,0,bW,bH);});
+  const cg=bctx.createLinearGradient(0,0,0,bH*0.18);cg.addColorStop(0,'rgba(20,10,50,0.8)');cg.addColorStop(1,'transparent');bctx.fillStyle=cg;bctx.fillRect(0,0,bW,bH*0.18);
+  bStars.forEach(s=>{s.a+=s.da;if(s.a>0.9)s.da=-Math.abs(s.da);if(s.a<0.05)s.da=Math.abs(s.da);bctx.beginPath();bctx.arc(s.x,s.y,s.r,0,Math.PI*2);bctx.fillStyle=`rgba(200,200,255,${s.a})`;bctx.fill();});
+  requestAnimationFrame(drawBg);
+}
+window.addEventListener('resize',bgResize);
+bgResize();drawBg();
+</script>
