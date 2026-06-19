@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hogwarts House Cup Scoreboard</title>
+</head>
+<body style="margin:0;padding:0;overflow:hidden;">
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cinzel:wght@400;700&family=Cinzel+Decorative:wght@400;700&display=swap');
@@ -76,7 +84,7 @@
 
   .winner-overlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:100;background:rgba(4,2,12,0.0);display:flex;align-items:center;justify-content:center;pointer-events:none;transition:background 1s ease;}
   .winner-overlay.active{background:rgba(4,2,12,0.93);pointer-events:all;}
-  .winner-box{text-align:center;padding:48px 52px;opacity:0;transform:scale(0.7) translateY(40px);transition:opacity 0.9s ease 0.5s,transform 0.9s ease 0.5s;max-width:420px;width:90%;}
+  /* winner-box now handled below */
   .winner-overlay.active .winner-box{opacity:1;transform:scale(1) translateY(0);}
   .winner-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:16px;}
   .winner-emblem{width:130px;height:130px;margin:0 auto 20px;filter:drop-shadow(0 0 24px var(--wc));}
@@ -93,6 +101,11 @@
   .winner-deco-gem{animation:float-gem 2s ease-in-out infinite;}
   @keyframes pulse-glow{0%,100%{opacity:1;}50%{opacity:0.6;}}
   .winner-name{animation:pulse-glow 2.5s ease-in-out infinite;}
+
+  .winner-box{text-align:center;padding:48px 52px;opacity:0;transform:scale(0.7) translateY(40px);transition:opacity 0.9s ease 0.5s,transform 0.9s ease 0.5s;max-width:460px;width:90%;max-height:90vh;overflow-y:auto;}
+  .winner-members{margin-bottom:24px;}
+  .winner-members-title{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:10px;}
+  .winner-member{font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.5);line-height:1.8;}
 </style>
 
 <div class="hw-root">
@@ -106,6 +119,7 @@
       <div class="winner-name" id="winnerName"></div>
       <div class="winner-deco"><span></span><div class="winner-deco-gem"></div><span></span></div>
       <div class="winner-pts" id="winnerPts"></div>
+      <div class="winner-members" id="winnerMembers"></div>
       <button class="close-overlay-btn" onclick="closeWinner()">&#8592; Back to Scoreboard</button>
     </div>
   </div>
@@ -133,6 +147,13 @@ const EMBLEMS={
   slytherin:`<img alt="Slytherin crest" src="https://commons.wikimedia.org/wiki/Special:FilePath/Blason%20Serpentard.svg" />`
 };
 
+
+const MEMBERS = {
+  gryffindor: ['Feminto','Gagan','Omkar','Pavan','Tanuja R.','Tanuja B.'],
+  hufflepuff: ['Ankit','Dikshita','Joyce','Prerna','Raksha','Sambartika'],
+  ravenclaw:  ['Bhadra','Lina','Rajat','Sai','Srinidhi','Tanvi'],
+  slytherin:  []
+};
 const HOUSES=[
   {id:'gryffindor',name:'Gryffindor',motto:'Bravery · Nerve · Chivalry',color:'#E8C84A'},
   {id:'hufflepuff',name:'Hufflepuff',motto:'Hard Work · Patience · Loyalty',color:'#F5E87A'},
@@ -187,6 +208,15 @@ function endGame(){
   document.getElementById('winnerEmblem').innerHTML=EMBLEMS[winner.id];
   document.getElementById('winnerName').textContent=winner.name;
   document.getElementById('winnerPts').textContent=scores[winner.id]+' Points Earned';
+  // Populate members
+  const membersDiv=document.getElementById('winnerMembers');
+  const membersList=MEMBERS[winner.id]||[];
+  if(membersList.length>0){
+    membersDiv.innerHTML='<div class="winner-members-title">Team Members</div>'+membersList.map(m=>`<div class="winner-member">${m.toUpperCase()}</div>`).join('');
+    membersDiv.style.display='block';
+  } else {
+    membersDiv.style.display='none';
+  }
   overlay.style.setProperty('--wc',winner.color);
   overlay.classList.add('active');
   startFireworks();
@@ -239,3 +269,5 @@ function drawBg(){
 window.addEventListener('resize',bgResize);
 bgResize();drawBg();
 </script>
+</body>
+</html>
